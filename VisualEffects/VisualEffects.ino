@@ -26,10 +26,45 @@ void loop()
   while(millis() < 20000)
     rain();
 
-  initPattern3();
+  initPattern4();
   while(millis() < 30000)
+    pattern4();
+
+  initPattern3();
+  while(millis() < 40000)
     pattern3();
 } // loop
+
+void initPattern4()
+{
+  cube->clearAll();
+  for(byte i=0; i < 64; i++)
+  {
+    delete leds[i];
+    leds[i] = NULL;
+  } // for
+
+  byte i=0;
+  for(byte x=0; x < 8; x++)
+    for(byte y=0; y < 8; y++)
+    {
+      leds[i] = new DynamicLED(x, y, (byte)random(0, 2)*7);
+      leds[i]->updateCube(cube);
+      i++;
+    } // for
+} // initPattern4
+
+void pattern4()
+{
+  byte randIndex = (byte)random(0, 64);
+  if(leds[randIndex]->zPos == 0)
+    leds[randIndex]->targetZ = 7;
+  else
+    leds[randIndex]->targetZ = 0;
+
+  moveAllToTarget(20);
+  cube->wait(200);
+} // pattern4
 
 void initPattern3()
 {
@@ -100,6 +135,13 @@ void rain()
 
 void initPattern1()
 {
+  cube->clearAll();
+  for(byte i=0; i < 64; i++)
+  {
+    delete leds[i];
+    leds[i] = NULL;
+  } // for
+  
   byte i=0;
   for(byte x=0; x < 8; x++)
     for(byte z=0; z < 8; z++)
