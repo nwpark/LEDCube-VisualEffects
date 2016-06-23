@@ -16,7 +16,6 @@ DynamicLED::~DynamicLED(){}
 
 void DynamicLED::move()
 {
-  direction = smartDirectionChange();
   if(xPos != targetX)
     xPos += Direction::xDelta(direction);
   if(yPos != targetY)
@@ -24,6 +23,54 @@ void DynamicLED::move()
   if(zPos != targetZ)
     zPos += Direction::zDelta(direction);
 } // move
+
+void DynamicLED::updateTargetPos(byte newX, byte newY, byte newZ)
+{
+  targetX = newX; targetY = newY; targetZ = newZ;
+  
+  if(xPos < targetX)
+    direction = Direction::RIGHT;
+  else if(xPos > targetX)
+    direction = Direction::LEFT;
+  else if(yPos < targetY)
+    direction = Direction::FORWARD;
+  else if(yPos > targetY)
+    direction = Direction::BACKWARD;
+  else if(zPos < targetZ)
+    direction = Direction::UP;
+  else if(zPos > targetZ)
+    direction = Direction::DOWN;
+} // updateTargetPos
+
+void DynamicLED::updateTargetX(byte newX)
+{
+  targetX = newX;
+  
+  if(xPos < targetX)
+    direction = Direction::RIGHT;
+  else if(xPos > targetX)
+    direction = Direction::LEFT;
+} // updateTargetX
+
+void DynamicLED::updateTargetY(byte newY)
+{
+  targetY = newY;
+
+  if(yPos < targetY)
+    direction = Direction::FORWARD;
+  else if(yPos > targetY)
+    direction = Direction::BACKWARD;
+} // updateTargetY
+
+void DynamicLED::updateTargetZ(byte newZ)
+{
+  targetZ = newZ;
+
+  if(zPos < targetZ)
+    direction = Direction::UP;
+  else if(zPos > targetZ)
+    direction = Direction::DOWN;
+} // updateTargetZ
 
 void DynamicLED::updateCube(CubeInterface *cube)
 {

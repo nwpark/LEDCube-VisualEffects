@@ -13,6 +13,10 @@ class DynamicLED
     byte xPos, yPos, zPos, direction;
     byte targetX, targetY, targetZ;
     void move();
+    void updateTargetPos(byte newX, byte newY, byte newZ);
+    void updateTargetX(byte newX);
+    void updateTargetY(byte newY);
+    void updateTargetZ(byte newZ);
     void updateCube(CubeInterface *cube);
     byte smartDirectionChange();
   private:

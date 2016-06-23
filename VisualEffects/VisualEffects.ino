@@ -6,6 +6,8 @@ CubeInterface *cube;
 
 DynamicLED *leds[64];
 
+int startTime;
+
 void setup()
 {
   cube = new CubeInterface(1);
@@ -14,6 +16,8 @@ void setup()
   {
     leds[i] = NULL;
   } // for
+
+  startTime = 0;
 } // setup
 
 void loop()
@@ -37,18 +41,13 @@ void loop()
 
 void initPattern4()
 {
-  cube->clearAll();
-  for(byte i=0; i < 64; i++)
-  {
-    delete leds[i];
-    leds[i] = NULL;
-  } // for
+  reset();
 
   byte i=0;
   for(byte x=0; x < 8; x++)
     for(byte y=0; y < 8; y++)
     {
-      leds[i] = new DynamicLED(x, y, (byte)random(0, 2)*7);
+      leds[i] = new DynamicLED(x, y, (byte)(random(0, 2)*7));
       leds[i]->updateCube(cube);
       i++;
     } // for
@@ -58,9 +57,9 @@ void pattern4()
 {
   byte randIndex = (byte)random(0, 64);
   if(leds[randIndex]->zPos == 0)
-    leds[randIndex]->targetZ = 7;
+    leds[randIndex]->updateTargetZ(7);
   else
-    leds[randIndex]->targetZ = 0;
+    leds[randIndex]->updateTargetZ(0);
 
   moveAllToTarget(20);
   cube->wait(200);
@@ -68,12 +67,7 @@ void pattern4()
 
 void initPattern3()
 {
-  cube->clearAll();
-  for(byte i=0; i < 64; i++)
-  {
-    delete leds[i];
-    leds[i] = NULL;
-  } // for
+  reset();
   
   byte i=0;
   for(byte x=0; x < 8; x++)
@@ -89,14 +83,14 @@ void pattern3()
 {
   for(int i=0; i < 63; i+=2)
   {
-    leds[i]->targetZ = (byte)random(1, 7);
+    leds[i]->updateTargetZ((byte)random(1, 7));
   } // for
   moveAllToTarget(60);
   cube->wait(500);
   
   for(int i=1; i < 64; i+=2)
   {
-    leds[i]->targetZ = (byte)random(1, 7);
+    leds[i]->updateTargetZ((byte)random(1, 7));
   } // for
   moveAllToTarget(60);
   cube->wait(500);
@@ -104,12 +98,7 @@ void pattern3()
 
 void initRain()
 {
-  cube->clearAll();
-  for(byte i=0; i < 64; i++)
-  {
-    delete leds[i];
-    leds[i] = NULL;
-  } // for
+  reset();
 } // initRain
 
 void rain()
@@ -120,13 +109,13 @@ void rain()
     if(leds[i] != NULL)
       delete leds[i];
     leds[i] = new DynamicLED((byte)random(0, 8), (byte)random(0, 8), 7);
-    leds[i]->targetZ = 0;
+    leds[i]->updateTargetZ(0);
 
     // uncomment this to double number of rain drops
 //    if(leds[i+10] != NULL)
 //      delete leds[i+10];
 //    leds[i+10] = new DynamicLED((byte)random(0, 8), (byte)random(0, 8), 7);
-//    leds[i+10]->targetZ = 0;
+//    leds[i+10]->updateTargetZ(0);
 
     updateCube();
     cube->wait(50);
@@ -135,12 +124,7 @@ void rain()
 
 void initPattern1()
 {
-  cube->clearAll();
-  for(byte i=0; i < 64; i++)
-  {
-    delete leds[i];
-    leds[i] = NULL;
-  } // for
+  reset();
   
   byte i=0;
   for(byte x=0; x < 8; x++)
@@ -157,24 +141,35 @@ void pattern1()
   cube->wait(450);
   
   for(byte i=0; i < 64; i++)
-    leds[i]->targetY = (byte)random(0, 8);
+    leds[i]->updateTargetY((byte)random(0, 8));
   moveAllToTarget(15);
   cube->wait(450);
   
   for(byte i=0; i < 64; i++)
-    leds[i]->targetY = 7;
+    leds[i]->updateTargetY(7);
   moveAllToTarget(15);
   cube->wait(450);
 
   for(byte i=0; i < 64; i++)
-    leds[i]->targetY = (byte)random(0, 8);
+    leds[i]->updateTargetY((byte)random(0, 8));
   moveAllToTarget(15);
   cube->wait(450);
 
   for(byte i=0; i < 64; i++)
-    leds[i]->targetY = 0;
+    leds[i]->updateTargetY(0);
   moveAllToTarget(15);
 } // pattern1
+
+void reset()
+{
+  cube->clearAll();
+  for(byte i=0; i < 64; i++)
+    if(leds[i] != NULL)
+    {
+      delete leds[i];
+      leds[i] = NULL;
+    } // for
+} // resetArray
 
 void moveAllToTarget(int delay)
 {
