@@ -11,6 +11,9 @@ DynamicLED::DynamicLED(byte initX, byte initY, byte initZ, byte initDirection)
   direction = initDirection;
 } // DynamicLED
 
+// destructor
+DynamicLED::~DynamicLED(){}
+
 void DynamicLED::move()
 {
   direction = smartDirectionChange();

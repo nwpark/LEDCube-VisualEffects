@@ -9,12 +9,15 @@ DynamicLED *leds[64];
 void setup()
 {
   cube = new CubeInterface(1);
-  initPattern1();
+  //initPattern1();
 } // setup
 
 void loop()
 {
-  pattern1();
+  initPattern1();
+  while(millis() < 10000)
+    pattern1();
+  endPattern1();
 } // loop
 
 void initPattern1()
