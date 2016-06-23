@@ -6,6 +6,9 @@ CubeInterface *cube;
 
 DynamicLED *leds[64];
 
+float distFromCenter[8][8];
+float offset;
+
 int startTime;
 
 void setup()
@@ -16,8 +19,6 @@ void setup()
   {
     leds[i] = NULL;
   } // for
-
-  startTime = 0;
 } // setup
 
 void loop()
@@ -37,7 +38,37 @@ void loop()
   initPattern3();
   while(millis() < 40000)
     pattern3();
+
+  initSineWave();
+    while(millis() < 50000)
+    sineWave();
 } // loop
+
+void initSineWave()
+{
+  reset();
+  offset = 0;
+
+  for(byte x=0; x < 8; x++)
+    for(byte y=0; y < 8; y++)
+    {
+      distFromCenter[x][y]
+        = ((sqrt(sq((x < 4) ? (3.5-x) : (x-3.5)) + sq((y < 4) ? (3.5-y) : (y-3.5))))) / 3.183;
+    } // for
+} // initSineWave
+
+void sineWave()
+{
+  cube->clearAll();
+  for(byte x=0; x < 8; x++)
+    for(byte y=0; y < 8; y++)
+    {
+      byte z = (sin(distFromCenter[x][y] + offset) + 1) * 4;
+      cube->light(x, y, z);
+    } // for
+    offset+=0.2;
+    cube->wait(30);
+} // sineWave
 
 void initPattern4()
 {
