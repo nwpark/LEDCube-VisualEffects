@@ -1,15 +1,17 @@
 #include "CubeInterface.h"
 #include "DynamicLED.h"
 #include "Direction.h"
+#include "Box.h"
 
 CubeInterface *cube;
 
 DynamicLED *leds[64];
+Box *box;
 
 float distFromCenter[8][8];
 float offset;
 
-int startTime;
+long currentTime;
 
 void setup()
 {
@@ -19,30 +21,71 @@ void setup()
   {
     leds[i] = NULL;
   } // for
+
+  initBoxGrowShrink();
 } // setup
 
 void loop()
 {
   initPattern1();
-  while(millis() < 10000)
+  currentTime = millis();
+  while(millis()-currentTime < 10000)
     pattern1();
 
   initRain();
-  while(millis() < 20000)
+  currentTime = millis();
+  while(millis()-currentTime < 10000)
     rain();
 
   initPattern4();
-  while(millis() < 30000)
+  currentTime = millis();
+  while(millis()-currentTime < 10000)
     pattern4();
 
   initPattern3();
-  while(millis() < 40000)
+  currentTime = millis();
+  while(millis()-currentTime < 10000)
     pattern3();
 
   initSineWave();
-    while(millis() < 50000)
+  currentTime = millis();
+  while(millis()-currentTime < 10000)
     sineWave();
+
+  initBoxGrowShrink();
+  currentTime = millis();
+  while(millis()-currentTime < 10000)
+    boxGrowShrink();
 } // loop
+
+void initBoxGrowShrink()
+{
+  reset();
+
+  box = new Box(0, 0, 0, 7);
+} // initBoxGrowShrink
+
+void boxGrowShrink()
+{
+  box->xOrigin = (byte)random(0, 2)*7;
+  box->yOrigin = (byte)random(0, 2)*7;
+  box->zOrigin = (byte)random(0, 2)*7;
+
+  for(byte i=0; i < 6; i++)
+  {
+    box->updateCube(cube);
+    box->boxSize--;
+    cube->wait(50);
+    cube->clearAll();
+  } // for
+  for(byte i=0; i < 6; i++)
+  {
+    box->updateCube(cube);
+    box->boxSize++;
+    cube->wait(50);
+    cube->clearAll();
+  } // for
+} // boxGrowShrink
 
 void initSineWave()
 {
@@ -194,12 +237,19 @@ void pattern1()
 void reset()
 {
   cube->clearAll();
+  
   for(byte i=0; i < 64; i++)
     if(leds[i] != NULL)
     {
       delete leds[i];
       leds[i] = NULL;
     } // for
+
+  if(box != NULL)
+  {
+    delete box;
+    box = NULL;
+  } // if
 } // resetArray
 
 void moveAllToTarget(int delay)
