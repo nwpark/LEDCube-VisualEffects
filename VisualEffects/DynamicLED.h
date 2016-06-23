@@ -8,7 +8,7 @@
 class DynamicLED
 {
   public:
-    DynamicLED(byte initX, byte initY, byte initZ, byte initDirection);
+    DynamicLED(byte initX, byte initY, byte initZ);
     ~DynamicLED();
     byte xPos, yPos, zPos, direction;
     byte targetX, targetY, targetZ;

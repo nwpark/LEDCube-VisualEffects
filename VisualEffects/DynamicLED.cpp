@@ -3,12 +3,12 @@
 byte xPos, yPos, zPos, direction;
 byte targetX, targetY, targetZ;
 
-DynamicLED::DynamicLED(byte initX, byte initY, byte initZ, byte initDirection)
+DynamicLED::DynamicLED(byte initX, byte initY, byte initZ)
 {
   xPos = targetX = initX;
   yPos = targetY = initY;
   zPos = targetZ = initZ;
-  direction = initDirection;
+  direction = Direction::FORWARD;
 } // DynamicLED
 
 // destructor
