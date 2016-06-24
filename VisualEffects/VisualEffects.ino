@@ -2,12 +2,15 @@
 #include "DynamicLED.h"
 #include "Direction.h"
 #include "Box.h"
+#include "Sphere.h"
 
 CubeInterface *cube;
 
 DynamicLED *leds[64];
-Box *box;
+Box *box = NULL;
+Sphere *sphere = NULL;
 
+// used for sine wave pattern
 float distFromCenter[8][8];
 float offset;
 
@@ -21,42 +24,181 @@ void setup()
   {
     leds[i] = NULL;
   } // for
-
-  initBoxGrowShrink();
+  
 } // setup
 
 void loop()
 {
-  initPattern1();
+  initPattern1(DynamicLED::Y_PLANE);
   currentTime = millis();
-  while(millis()-currentTime < 10000)
-    pattern1();
+  while(millis()-currentTime < 5000)
+  {
+    pattern1(DynamicLED::Y_PLANE);
+    pattern1(DynamicLED::Y_PLANE);
+    pattern1(DynamicLED::X_PLANE);
+    pattern1(DynamicLED::X_PLANE);
+  } // while
 
   initRain();
   currentTime = millis();
-  while(millis()-currentTime < 10000)
+  while(millis()-currentTime < 5000)
     rain();
 
   initPattern4();
   currentTime = millis();
-  while(millis()-currentTime < 10000)
+  while(millis()-currentTime < 5000)
     pattern4();
 
   initPattern3();
   currentTime = millis();
-  while(millis()-currentTime < 10000)
+  while(millis()-currentTime < 5000)
     pattern3();
 
   initSineWave();
   currentTime = millis();
-  while(millis()-currentTime < 10000)
+  while(millis()-currentTime < 5000)
     sineWave();
 
   initBoxGrowShrink();
   currentTime = millis();
-  while(millis()-currentTime < 10000)
+  while(millis()-currentTime < 5000)
     boxGrowShrink();
+
+  initPattern7(DynamicLED::Y_PLANE);
+  currentTime = millis();
+  while(millis()-currentTime < 3000)
+  {
+    pattern7(DynamicLED::Y_PLANE);
+    pattern7(DynamicLED::X_PLANE);
+    pattern7(DynamicLED::Z_PLANE);
+  }
+
+  initPattern8(DynamicLED::Y_PLANE, 0);
+  currentTime = millis();
+  while(millis()-currentTime < 5000)
+  {
+    pattern8(DynamicLED::Y_PLANE, 7);
+    pattern8(DynamicLED::Y_PLANE, 0);
+    pattern8(DynamicLED::X_PLANE, 7);
+    pattern8(DynamicLED::X_PLANE, 0);
+  } // while
+
+//  initSphere();
+//  spherePattern();
 } // loop
+
+void initPattern8(byte plane, byte initCoord)
+{
+  reset();
+  
+  byte i=0;
+  for(byte x=0; x < 8; x++)
+    for(byte z=0; z < 8; z++)
+    {
+      if(plane == DynamicLED::X_PLANE) leds[i] = new DynamicLED(initCoord, x, z);
+      if(plane == DynamicLED::Y_PLANE) leds[i] = new DynamicLED(x, initCoord, z);
+      if(plane == DynamicLED::Z_PLANE) leds[i] = new DynamicLED(x, z, initCoord);
+      leds[i]->updateCube(cube);
+      i++;
+    } // for
+} // initPattern8
+
+void pattern8(byte plane, byte targetCoord)
+{
+  initPattern8(plane, 7-targetCoord);
+    
+  for(int i=0; i < 64; i++)
+  {
+    byte index = (byte)random(0, 64);
+    leds[index]->updateTarget(targetCoord, plane);
+
+    moveDynamicLEDS();
+    updateCube();
+    cube->wait(10);
+  } // while
+
+  for(byte i=0; i < 32; i++)
+  {
+      leds[i]->updateTarget(targetCoord, plane);
+      leds[63-i]->updateTarget(targetCoord, plane);
+      moveDynamicLEDS();
+      updateCube();
+      cube->wait(10);
+  } // for
+
+  moveAllToTarget(15);
+} // pattern1
+
+void initPattern7(byte plane)
+{
+  reset();
+  
+  byte i=0;
+  for(byte x=0; x < 8; x++)
+    for(byte z=0; z < 8; z++)
+    {
+      if(plane == DynamicLED::X_PLANE) leds[i] = new DynamicLED(0, x, z);
+      if(plane == DynamicLED::Y_PLANE) leds[i] = new DynamicLED(x, 0, z);
+      if(plane == DynamicLED::Z_PLANE) leds[i] = new DynamicLED(x, z, 0);
+      leds[i]->updateCube(cube);
+      i++;
+    } // for
+
+//  cube->wait(500);
+} // initPattern7
+
+void pattern7(byte plane)
+{
+  initPattern1(plane);
+    
+  for(byte i=0; i < 64; i++)
+  {
+    leds[i]->updateTarget(7, plane);
+    //leds[63-i]->updateTarget(7, plane);
+    moveDynamicLEDS();
+    updateCube();
+    cube->wait(8);
+  } // for
+      
+  moveAllToTarget(8);
+
+  for(byte i=0; i < 64; i++)
+  {
+    leds[i]->updateTarget(0, plane);
+    moveDynamicLEDS();
+    updateCube();
+    cube->wait(8);
+  } // for
+      
+  moveAllToTarget(8);
+} // pattern7
+
+void initSphere()
+{
+  reset();
+  
+  sphere = new Sphere(1.5, 1.5, 1.5, 1);
+} // initSphere
+
+void spherePattern()
+{
+//  sphere->updateCube(cube);
+//  cube->wait(5000);
+  for(int i=0; i < 4; i++)
+  {
+    cube->clearAll();
+    sphere->yOrigin++;
+    sphere->updateCube(cube);
+    cube->wait(50);
+  } // for
+  for(int i=0; i < 4; i++)
+  {
+    cube->clearAll();
+    sphere->yOrigin--;
+    sphere->updateCube(cube);
+    cube->wait(50);
+  } // for
+} // spherePattern
 
 void initBoxGrowShrink()
 {
@@ -96,7 +238,8 @@ void initSineWave()
     for(byte y=0; y < 8; y++)
     {
       distFromCenter[x][y]
-        = ((sqrt(sq((x < 4) ? (3.5-x) : (x-3.5)) + sq((y < 4) ? (3.5-y) : (y-3.5))))) / 3.183;
+        = (sqrt(sq((x < 4) ? (3.5-x) : (x-3.5)) 
+                + sq((y < 4) ? (3.5-y) : (y-3.5)))) / 3.183;
     } // for
 } // initSineWave
 
@@ -196,7 +339,7 @@ void rain()
   } // for
 } // rain
 
-void initPattern1()
+void initPattern1(byte plane)
 {
   reset();
   
@@ -204,35 +347,36 @@ void initPattern1()
   for(byte x=0; x < 8; x++)
     for(byte z=0; z < 8; z++)
     {
-      leds[i] = new DynamicLED(x, 0, z);
+      if(plane == DynamicLED::X_PLANE) leds[i] = new DynamicLED(0, x, z);
+      if(plane == DynamicLED::Y_PLANE) leds[i] = new DynamicLED(x, 0, z);
+      if(plane == DynamicLED::Z_PLANE) leds[i] = new DynamicLED(x, z, 0);
       leds[i]->updateCube(cube);
       i++;
     } // for
 } // initPattern1
 
-void pattern1()
+void pattern1(byte plane)
+{
+  initPattern1(plane);
+    
+  pattern1PositionUpdater(-1, plane);
+  pattern1PositionUpdater(7, plane);
+  pattern1PositionUpdater(-1, plane);
+  pattern1PositionUpdater(0, plane);
+} // pattern1
+
+void pattern1PositionUpdater(int newPosition, byte plane)
 {
   cube->wait(450);
   
   for(byte i=0; i < 64; i++)
-    leds[i]->updateTargetY((byte)random(0, 8));
+    if(newPosition == -1)
+      leds[i]->updateTarget((byte)random(0, 8), plane);
+    else
+      leds[i]->updateTarget(newPosition, plane);
+      
   moveAllToTarget(15);
-  cube->wait(450);
-  
-  for(byte i=0; i < 64; i++)
-    leds[i]->updateTargetY(7);
-  moveAllToTarget(15);
-  cube->wait(450);
-
-  for(byte i=0; i < 64; i++)
-    leds[i]->updateTargetY((byte)random(0, 8));
-  moveAllToTarget(15);
-  cube->wait(450);
-
-  for(byte i=0; i < 64; i++)
-    leds[i]->updateTargetY(0);
-  moveAllToTarget(15);
-} // pattern1
+} // pattern1PositionUpdater
 
 void reset()
 {
@@ -249,6 +393,11 @@ void reset()
   {
     delete box;
     box = NULL;
+  } // if
+  if(sphere != NULL)
+  {
+    delete sphere;
+    sphere = NULL;
   } // if
 } // resetArray
 

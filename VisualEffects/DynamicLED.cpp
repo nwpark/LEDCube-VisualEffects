@@ -1,7 +1,6 @@
 #include "DynamicLED.h"
 
-byte xPos, yPos, zPos, direction;
-byte targetX, targetY, targetZ;
+const byte DynamicLED::X_PLANE = 0, DynamicLED::Y_PLANE = 1, DynamicLED::Z_PLANE = 2;
 
 DynamicLED::DynamicLED(byte initX, byte initY, byte initZ)
 {
@@ -71,6 +70,21 @@ void DynamicLED::updateTargetZ(byte newZ)
   else if(zPos > targetZ)
     direction = Direction::DOWN;
 } // updateTargetZ
+
+void DynamicLED::updateTarget(byte newCoord, byte plane)
+{
+  switch(plane)
+  {
+    case X_PLANE: this->updateTargetX(newCoord); break;
+    case Y_PLANE: this->updateTargetY(newCoord); break;
+    case Z_PLANE: this->updateTargetZ(newCoord); break;
+  } // switch
+} // updateTarget
+
+boolean DynamicLED::atTarget()
+{
+  return xPos == targetX && yPos == targetY && zPos == targetZ;
+} // atTarget
 
 void DynamicLED::updateCube(CubeInterface *cube)
 {

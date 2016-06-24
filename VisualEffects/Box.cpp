@@ -1,8 +1,5 @@
 #include "Box.h"
 
-byte xOrigin, yOrigin, zOrigin;
-byte boxSize;
-
 Box::Box(byte initX, byte initY, byte initZ, byte initSize)
 {
   xOrigin = initX;
