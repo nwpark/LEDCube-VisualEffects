@@ -88,7 +88,9 @@ boolean DynamicLED::atTarget()
 
 void DynamicLED::updateCube(CubeInterface *cube)
 {
-  cube->light(xPos, yPos, zPos);
+  if(xPos < 8 && yPos < 8 && zPos < 8
+         && xPos >=0 && yPos >= 0 && zPos >=0)
+    cube->light(xPos, yPos, zPos);
 } // updateCube
 
 byte DynamicLED::smartDirectionChange()
