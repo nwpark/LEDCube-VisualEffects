@@ -29,14 +29,13 @@ void setup()
 
 void loop()
 {
-  initPattern1(DynamicLED::Y_PLANE);
+  initPattern7(DynamicLED::Y_PLANE);
   currentTime = millis();
-  while(millis()-currentTime < 10000)
+  while(millis()-currentTime < 5000)
   {
-    pattern1(DynamicLED::Y_PLANE);
-    pattern1(DynamicLED::Y_PLANE);
-    pattern1(DynamicLED::X_PLANE);
-    pattern1(DynamicLED::X_PLANE);
+    pattern7(DynamicLED::Y_PLANE);
+    pattern7(DynamicLED::X_PLANE);
+    pattern7(DynamicLED::Z_PLANE);
   } // while
 
   initRain();
@@ -51,22 +50,27 @@ void loop()
 
   initSpiral();
   currentTime = millis();
-  while(millis()-currentTime < 10000)
+  while(millis()-currentTime < 7000)
     // 1.5708, 3.1416, 4.7124
     spiral(0, 1);
+  currentTime = millis();
+  while(millis()-currentTime < 7000)
+    // 1.5708, 3.1416, 4.7124
+    spiral(1.5708, -1);
 
   initBoxGrowShrink();
   currentTime = millis();
   while(millis()-currentTime < 10000)
     boxGrowShrink();
 
-  initPattern7(DynamicLED::Y_PLANE);
+  initPattern1(DynamicLED::Y_PLANE);
   currentTime = millis();
-  while(millis()-currentTime < 5000)
+  while(millis()-currentTime < 10000)
   {
-    pattern7(DynamicLED::Y_PLANE);
-    pattern7(DynamicLED::X_PLANE);
-    pattern7(DynamicLED::Z_PLANE);
+    pattern1(DynamicLED::Y_PLANE);
+    pattern1(DynamicLED::Y_PLANE);
+    pattern1(DynamicLED::X_PLANE);
+    pattern1(DynamicLED::X_PLANE);
   } // while
 
   initSineWave();
