@@ -32,7 +32,7 @@ void loop()
 {
   initPattern7(DynamicLED::Y_PLANE);
   currentTime = millis();
-  while(millis()-currentTime < 5000)
+  while(millis()-currentTime < 10000)
   {
     pattern7(DynamicLED::Y_PLANE);
     pattern7(DynamicLED::X_PLANE);
@@ -41,12 +41,12 @@ void loop()
 
   initRain();
   currentTime = millis();
-  while(millis()-currentTime < 10000)
+  while(millis()-currentTime < 20000)
     rain();
 
   initPattern4();
   currentTime = millis();
-  while(millis()-currentTime < 10000)
+  while(millis()-currentTime < 20000)
     pattern4();
 
   initSpiral();
@@ -65,12 +65,12 @@ void loop()
 
   initBoxGrowShrink();
   currentTime = millis();
-  while(millis()-currentTime < 10000)
+  while(millis()-currentTime < 20000)
     boxGrowShrink();
 
   initPattern1(DynamicLED::Y_PLANE);
   currentTime = millis();
-  while(millis()-currentTime < 10000)
+  while(millis()-currentTime < 20000)
   {
     pattern1(DynamicLED::Y_PLANE);
     pattern1(DynamicLED::Y_PLANE);
@@ -80,12 +80,12 @@ void loop()
 
   initSineWave();
   currentTime = millis();
-  while(millis()-currentTime < 10000)
+  while(millis()-currentTime < 20000)
     sineWave();
 
   initPattern8(DynamicLED::Y_PLANE, 0);
   currentTime = millis();
-  while(millis()-currentTime < 10000)
+  while(millis()-currentTime < 20000)
   {
     pattern8(DynamicLED::Y_PLANE, 7);
     pattern8(DynamicLED::Y_PLANE, 0);
@@ -95,7 +95,7 @@ void loop()
 
   initPattern3();
   currentTime = millis();
-  while(millis()-currentTime < 10000)
+  while(millis()-currentTime < 20000)
     pattern3();
 
 //  initSphere();
